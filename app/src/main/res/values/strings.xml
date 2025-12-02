@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">TextGrabber</string>
+    <string name="accessibility_service_description">TextGrabber Service to capture screen text.</string>
+    <string name="service_enabled">Service Enabled</string>
+    <string name="service_disabled">Service Disabled</string>
+    <string name="toggle_service">Toggle Text Capture</string>
+    <string name="permission_hint">Please enable Accessibility Service in Settings</string>
+</resources>
