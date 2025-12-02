@@ -8,6 +8,7 @@ import android.provider.Settings;
 import android.text.TextUtils;
 import android.widget.Switch;
 import android.widget.Toast;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -24,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Toast.makeText(this, "TextGrabber 服务已启动", Toast.LENGTH_SHORT).show();
 
         // 初始化 SharedPreferences
         sp = getSharedPreferences("app_config", MODE_PRIVATE);
@@ -34,6 +36,13 @@ public class MainActivity extends AppCompatActivity {
 
         // 监听开关变化
         toggleSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            Log.d("MainActivity", "Switch state changed: " + isChecked);
+            System.out.println("TextGrabber: Switch state changed: " + isChecked);
+            
+            // 显式创建并显示 Toast
+            Toast toast = Toast.makeText(MainActivity.this, "开关状态: " + isChecked, Toast.LENGTH_LONG);
+            toast.show();
+            
             // 保存当前状态
             sp.edit().putBoolean("is_active", isChecked).apply();
 

@@ -19,9 +19,18 @@ public class MyAccessibilityService extends AccessibilityService {
     private static final long PROCESS_INTERVAL = 500; // 节流间隔 (毫秒)，防止处理过于频繁
 
     @Override
+    public void onCreate() {
+        super.onCreate();
+        Log.d("MyAccessibilityService", "onCreate: Service created");
+    }
+
+    @Override
     public void onServiceConnected() {
         super.onServiceConnected();
         Log.d("MyAccessibilityService", "onServiceConnected: Service connected");
+        // 显示 Toast 提示，确保用户能看到服务启动了
+        android.widget.Toast.makeText(this, "TextGrabber 服务已启动", android.widget.Toast.LENGTH_SHORT).show();
+        
         // 初始化组件
         dbManager = new DBManager(this);
         deduplicationLogic = new DeduplicationLogic();
