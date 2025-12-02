@@ -13,8 +13,8 @@ public class DBManager extends SQLiteOpenHelper {
 
     // 数据库名称
     private static final String DATABASE_NAME = "text_grabber.db";
-    // 数据库版本号
-    private static final int DATABASE_VERSION = 1;
+    // 数据库版本号（改为 2，因为添加了唯一约束）
+    private static final int DATABASE_VERSION = 2;
     // 表名
     private static final String TABLE_NAME = "captured_text";
 
@@ -41,7 +41,7 @@ public class DBManager extends SQLiteOpenHelper {
                 COLUMN_PKG_NAME + " TEXT, " +
                 COLUMN_VIEW_ID + " TEXT, " +
                 COLUMN_CAPTURE_TIME + " INTEGER, " +
-                COLUMN_HASH_KEY + " TEXT)";
+                COLUMN_HASH_KEY + " TEXT UNIQUE)"; // 添加 UNIQUE 约束
         db.execSQL(createTable);
     }
 
@@ -72,7 +72,11 @@ public class DBManager extends SQLiteOpenHelper {
         values.put(COLUMN_VIEW_ID, viewId);
         values.put(COLUMN_CAPTURE_TIME, captureTime);
         values.put(COLUMN_HASH_KEY, hashKey);
-        db.insert(TABLE_NAME, null, values);
-        db.close();
+        
+        // 使用 insertWithOnConflict，遇到重复的 hash_key 时自动忽略
+        db.insertWithOnConflict(TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_IGNORE);
+
+        // 注意：不要调用 db.close()，让 SQLiteOpenHelper 自动管理连接
+        // 这样可以避免频繁开关数据库，也能让 Database Inspector 正常查看
     }
 }

@@ -45,7 +45,7 @@ public class MyAccessibilityService extends AccessibilityService {
      */
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
-        Log.d("MyAccessibilityService", "onAccessibilityEvent: " + event.getEventType());
+        Log.d("MyAccessibilityService", "onAccessibilityEvent: " + AccessibilityEvent.eventTypeToString(event.getEventType()));
         
         // 每次事件触发都检查一下开关状态（虽然有点耗性能，但能保证实时响应开关）
         SharedPreferences sp = getSharedPreferences("app_config", MODE_PRIVATE);
