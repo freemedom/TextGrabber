@@ -117,9 +117,9 @@ public class MainActivity extends AppCompatActivity {
      */
     private void updateRecentTexts() {
         new Thread(() -> {
-            java.util.List<String> recentTexts = dbManager.getRecentTexts(20);
+            java.util.List<String> recentTexts = dbManager.getRecentTexts(30);
             
-            StringBuilder sb = new StringBuilder("最近 20 条记录:\n");
+            StringBuilder sb = new StringBuilder("最近 30 条记录:\n");
             if (recentTexts.isEmpty()) {
                 sb.append("(暂无数据)");
             } else {

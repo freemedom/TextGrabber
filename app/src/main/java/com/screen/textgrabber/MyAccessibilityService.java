@@ -49,7 +49,7 @@ public class MyAccessibilityService extends AccessibilityService {
      */
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
-        Log.d("MyAccessibilityService", "onAccessibilityEvent: " + AccessibilityEvent.eventTypeToString(event.getEventType()));
+        // Log.d("MyAccessibilityService", "onAccessibilityEvent: " + AccessibilityEvent.eventTypeToString(event.getEventType()));
         
         // 每次事件触发都检查一下开关状态（虽然有点耗性能，但能保证实时响应开关）
         SharedPreferences sp = getSharedPreferences("app_config", MODE_PRIVATE);
@@ -86,6 +86,11 @@ public class MyAccessibilityService extends AccessibilityService {
             String className = node.getClassName().toString();
             String packageName = node.getPackageName() != null ? node.getPackageName().toString() : "";
 
+            // 调试日志：查看 viewId 获取情况
+            // Log.d("MyAccessibilityService", "Content: " + content.substring(0, Math.min(30, content.length())) + 
+            //       " | ViewId: " + (viewId != null ? viewId : "NULL") + 
+            //       " | Package: " + packageName);
+
             // 处理并保存
             processAndSave(content, viewId, packageName, className);
         }
@@ -108,6 +113,11 @@ public class MyAccessibilityService extends AccessibilityService {
     private void processAndSave(String content, String viewId, String packageName, String className) {
         // 过滤空字符串
         if (content.trim().isEmpty()) return;
+
+        // 排除自己的 app，不抓取 TextGrabber 自身的文本
+        if ("com.screen.textgrabber".equals(packageName)) {
+            return;
+        }
 
         // 生成唯一键
         String uniqueKey = deduplicationLogic.generateKey(packageName, viewId, content);
