@@ -12,8 +12,8 @@ public class DeduplicationLogic {
     private LruCache<String, Long> processedCache;
 
     public DeduplicationLogic() {
-        // 缓存大小设置为 200 条
-        processedCache = new LruCache<>(200);
+        // 缓存大小设置为 400 条
+        processedCache = new LruCache<>(400);
     }
 
     /**

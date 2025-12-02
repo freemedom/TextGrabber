@@ -79,4 +79,36 @@ public class DBManager extends SQLiteOpenHelper {
         // 注意：不要调用 db.close()，让 SQLiteOpenHelper 自动管理连接
         // 这样可以避免频繁开关数据库，也能让 Database Inspector 正常查看
     }
+
+    /**
+     * 获取最近保存的文本记录
+     *
+     * @param limit 返回的记录数量
+     * @return 文本内容列表
+     */
+    public java.util.List<String> getRecentTexts(int limit) {
+        java.util.List<String> texts = new java.util.ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        
+        android.database.Cursor cursor = db.query(
+            TABLE_NAME,
+            new String[]{COLUMN_CONTENT},
+            null,
+            null,
+            null,
+            null,
+            COLUMN_CAPTURE_TIME + " DESC",
+            String.valueOf(limit)
+        );
+        
+        if (cursor.moveToFirst()) {
+            do {
+                String content = cursor.getString(0);
+                texts.add(content);
+            } while (cursor.moveToNext());
+        }
+        
+        cursor.close();
+        return texts;
+    }
 }

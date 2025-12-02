@@ -21,8 +21,11 @@ public class MainActivity extends AppCompatActivity {
     private Switch toggleSwitch; // 控制开关
     private SharedPreferences sp; // 用于保存开关状态
     private android.widget.TextView tvCounter; // 显示保存计数
+    private android.widget.TextView tvRecentTexts; // 显示最近的文本
     private android.os.Handler handler; // 用于定时更新计数
     private Runnable updateCounterRunnable; // 更新计数的任务
+    private Runnable updateRecentTextsRunnable; // 更新最近文本的任务
+    private DBManager dbManager; // 数据库管理器
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +36,10 @@ public class MainActivity extends AppCompatActivity {
         sp = getSharedPreferences("app_config", MODE_PRIVATE);
         toggleSwitch = findViewById(R.id.btn_toggle);
         tvCounter = findViewById(R.id.tv_counter);
+        tvRecentTexts = findViewById(R.id.tv_recent_texts);
+        
+        // 初始化数据库管理器
+        dbManager = new DBManager(this);
 
         // 初始化 Handler
         handler = new android.os.Handler();
@@ -41,6 +48,14 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 updateCounter();
                 handler.postDelayed(this, 1000); // 每 1000ms 更新一次
+            }
+        };
+        
+        updateRecentTextsRunnable = new Runnable() {
+            @Override
+            public void run() {
+                updateRecentTexts();
+                handler.postDelayed(this, 5000); // 每 5000ms 更新一次
             }
         };
         Toast.makeText(this, "TextGrabber 服务已启动", Toast.LENGTH_SHORT).show();
@@ -77,6 +92,8 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         // 开始定时更新计数
         handler.post(updateCounterRunnable);
+        // 开始定时更新最近文本
+        handler.post(updateRecentTextsRunnable);
     }
 
     @Override
@@ -84,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
         // 停止定时更新
         handler.removeCallbacks(updateCounterRunnable);
+        handler.removeCallbacks(updateRecentTextsRunnable);
     }
 
     /**
@@ -92,6 +110,32 @@ public class MainActivity extends AppCompatActivity {
     private void updateCounter() {
         int count = sp.getInt("saved_count", 0);
         tvCounter.setText("已保存: " + count + " 条");
+    }
+
+    /**
+     * 更新最近文本显示
+     */
+    private void updateRecentTexts() {
+        new Thread(() -> {
+            java.util.List<String> recentTexts = dbManager.getRecentTexts(20);
+            
+            StringBuilder sb = new StringBuilder("最近 20 条记录:\n");
+            if (recentTexts.isEmpty()) {
+                sb.append("(暂无数据)");
+            } else {
+                for (int i = 0; i < recentTexts.size(); i++) {
+                    String text = recentTexts.get(i);
+                    // 截断过长的文本
+                    if (text.length() > 50) {
+                        text = text.substring(0, 50) + "...";
+                    }
+                    sb.append((i + 1)).append(". ").append(text).append("\n");
+                }
+            }
+            
+            final String displayText = sb.toString();
+            runOnUiThread(() -> tvRecentTexts.setText(displayText));
+        }).start();
     }
 
     /**

@@ -13,8 +13,9 @@
         android:text="已保存: 0 条"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:layout_marginBottom="32dp"
-        app:layout_constraintBottom_toTopOf="@id/btn_toggle"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -24,9 +25,30 @@
         android:layout_height="wrap_content"
         android:text="@string/toggle_service"
         android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/tv_counter"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="16dp"
+        app:layout_constraintTop_toBottomOf="@id/btn_toggle"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:id="@+id/tv_recent_texts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="最近记录:\n(等待数据...)"
+            android:textSize="14sp"
+            android:padding="8dp"
+            android:background="#F5F5F5"
+            android:fontFamily="monospace" />
+
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
