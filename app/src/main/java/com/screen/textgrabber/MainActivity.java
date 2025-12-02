@@ -20,11 +20,29 @@ public class MainActivity extends AppCompatActivity {
 
     private Switch toggleSwitch; // 控制开关
     private SharedPreferences sp; // 用于保存开关状态
+    private android.widget.TextView tvCounter; // 显示保存计数
+    private android.os.Handler handler; // 用于定时更新计数
+    private Runnable updateCounterRunnable; // 更新计数的任务
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // 初始化 SharedPreferences
+        sp = getSharedPreferences("app_config", MODE_PRIVATE);
+        toggleSwitch = findViewById(R.id.btn_toggle);
+        tvCounter = findViewById(R.id.tv_counter);
+
+        // 初始化 Handler
+        handler = new android.os.Handler();
+        updateCounterRunnable = new Runnable() {
+            @Override
+            public void run() {
+                updateCounter();
+                handler.postDelayed(this, 1000); // 每 1000ms 更新一次
+            }
+        };
         Toast.makeText(this, "TextGrabber 服务已启动", Toast.LENGTH_SHORT).show();
 
         // 初始化 SharedPreferences
@@ -52,6 +70,28 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS));
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // 开始定时更新计数
+        handler.post(updateCounterRunnable);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // 停止定时更新
+        handler.removeCallbacks(updateCounterRunnable);
+    }
+
+    /**
+     * 更新计数显示
+     */
+    private void updateCounter() {
+        int count = sp.getInt("saved_count", 0);
+        tvCounter.setText("已保存: " + count + " 条");
     }
 
     /**

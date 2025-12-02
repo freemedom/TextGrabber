@@ -17,11 +17,15 @@ public class MyAccessibilityService extends AccessibilityService {
     private DeduplicationLogic deduplicationLogic; // 去重逻辑
     private long lastProcessTime = 0; // 上次处理时间
     private static final long PROCESS_INTERVAL = 500; // 节流间隔 (毫秒)，防止处理过于频繁
+    private int savedCount = 0; // 本次启动保存的文本数量
 
     @Override
     public void onCreate() {
         super.onCreate();
         Log.d("MyAccessibilityService", "onCreate: Service created");
+        // 重置计数器
+        savedCount = 0;
+        getSharedPreferences("app_config", MODE_PRIVATE).edit().putInt("saved_count", 0).apply();
     }
 
     @Override
@@ -117,6 +121,10 @@ public class MyAccessibilityService extends AccessibilityService {
 
         // 保存到数据库
         dbManager.insertText(content, packageName, viewId, System.currentTimeMillis(), uniqueKey);
+        
+        // 增加计数并保存到 SharedPreferences
+        savedCount++;
+        getSharedPreferences("app_config", MODE_PRIVATE).edit().putInt("saved_count", savedCount).apply();
     }
 
     @Override
