@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void updateCounter() {
         int count = sp.getInt("saved_count", 0);
-        tvCounter.setText("已保存: " + count + " 条");
+        tvCounter.setText(getString(R.string.saved_count, count));
     }
 
     /**
@@ -119,9 +119,9 @@ public class MainActivity extends AppCompatActivity {
         new Thread(() -> {
             java.util.List<String> recentTexts = dbManager.getRecentTexts(30);
             
-            StringBuilder sb = new StringBuilder("最近 30 条记录:\n");
+            StringBuilder sb = new StringBuilder(getString(R.string.recent_texts_title, 30));
             if (recentTexts.isEmpty()) {
-                sb.append("(暂无数据)");
+                sb.append(getString(R.string.no_data));
             } else {
                 for (int i = 0; i < recentTexts.size(); i++) {
                     String text = recentTexts.get(i);

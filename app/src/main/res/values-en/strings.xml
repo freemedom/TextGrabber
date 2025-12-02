@@ -5,7 +5,7 @@
     <string name="service_disabled">Service Disabled</string>
     <string name="toggle_service">Toggle Text Capture</string>
     <string name="permission_hint">Please enable Accessibility Service in Settings</string>
-    <string name="saved_count">已保存: %d 条</string>
-    <string name="recent_texts_title">最近 %d 条记录:\n</string>
-    <string name="no_data">(暂无数据)</string>
+    <string name="saved_count">Saved: %d items</string>
+    <string name="recent_texts_title">Recent %d items:\n</string>
+    <string name="no_data">(No data)</string>
 </resources>

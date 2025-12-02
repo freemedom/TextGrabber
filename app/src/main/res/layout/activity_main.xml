@@ -10,7 +10,7 @@
         android:id="@+id/tv_counter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="已保存: 0 条"
+        android:text="@string/saved_count"
         android:textSize="24sp"
         android:textStyle="bold"
         android:layout_marginTop="24dp"
